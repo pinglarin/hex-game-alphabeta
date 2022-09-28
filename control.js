@@ -17,7 +17,21 @@ function setUpControl() {
       //   console.log(curPlayer.player)
       let action = await takeTurn(curAgent);
       console.log(curAgent, ":", action);
+
       GAMESTATE = GAMESTATE.transition(action);
+
+      let b = "";
+      // b_ = []
+      for (let i = 0; i < GAMESTATE.board.length; i++) {
+        for (let j = 0; j < GAMESTATE.board.length; j++) {
+          b += GAMESTATE.board[i][j] + " ";
+          // b_.push(newState.board[i][j]);
+        }
+        b += "\n";
+        // b.push(b_);
+      }
+      console.log(b);
+
       redraw();
     }
   });

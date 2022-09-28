@@ -9,6 +9,8 @@
 // EXAMPLE AGENT: YOU CAN COPY AND MODIFY THIS AGENT
 // ========================================================
 
+// https://github.com/mehboobali98/The-Game-of-Hex/blob/main/src/AiHex/players/EvaluationFunction.java
+
 class Agent {
   constructor(player) {
     this.player = player;
@@ -36,7 +38,7 @@ class Agent {
       let action = actions[i];
       let newState = initial_state.transition(action);
       let minimaxVal = this.minVal(newState, 1, alpha, beta);
-      console.log("option:", action, minimaxVal, "...");
+
       if (minimaxVal > curMaxVal) {
         curMaxVal = minimaxVal;
         this.curBestMove = action;
@@ -70,8 +72,11 @@ class Agent {
       return state.utility(this.player) * Number.POSITIVE_INFINITY;
     }
     if (depth >= this.depthLimit) {
-      return this.evaluate(state);
+      let e = this.evaluate(state);
+      console.log(e);
+      return e;
     }
+
     let minimaxVal = Number.NEGATIVE_INFINITY;
     let actions = state.actions();
     for (let i = 0; i < actions.length; i++) {
@@ -87,7 +92,50 @@ class Agent {
   // EVALUATION FUNCTIONS
 
   evaluate(state) {
-    return Math.random();
+    // y_reduction, max_flow
+    // let r1 = null
+    // let r2 = null;
+    let ysize = state.hex_size + state.hex_size - 1;
+    let yboard = [];
+    for (let i = 0; i < ysize; i++) {
+      let column = [];
+      for (let j = 0; j < ysize - i; j++) {
+        if (i < state.hex_size && j < state.hex_size) {
+          let s = state.board[i][j];
+          if (s == "b") {
+            column.push(1);
+          } else if (s == "r") {
+            column.push(-1);
+          } else {
+            column.push(0);
+          }
+          // temp = s == self.min ? -1 : 1;
+          // temp = state == self.max ? 1 : 0
+          // column.push(s == self.min ? -1 : 1 );
+          // column.push(-1 if state == self.min else 1 if state == self.max else 0)
+        } else if (i >= state.hex_size) {
+          column.push(-1);
+        } else if (j >= state.hex_size) {
+          column.push(1);
+        }
+      }
+      yboard.push(column);
+    }
+
+    for (let i = ysize; i >= 0; i--) {
+      for (let y = 0; y < i - 1; y++) {
+        for (let x = 0; x < i - 1 - y; x++) {
+          let p1 = yboard[x][y];
+          // console.log(x + " " + y);
+          let p2 = yboard[x + 1][y];
+
+          let p3 = yboard[x][y + 1];
+          yboard[x][y] = (p1 + p2 + p3 - p1 * p2 * p3) / 2;
+        }
+      }
+    }
+    return yboard[0][0];
+    // return Math.random();
   }
 
   _evaluate(state) {
@@ -191,6 +239,7 @@ class HexGameState {
     if (action && this.isValidAction(action.i, action.j)) {
       newBoard[action.i][action.j] = this.player;
     }
+    // console.log(newBoard[newBoard.length - 1][0]);
     return new HexGameState(this.hex_size, newBoard, nextPlayer);
   }
 

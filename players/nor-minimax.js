@@ -2,13 +2,11 @@
 // EXAMPLE AGENT: YOU CAN COPY AND MODIFY THIS AGENT
 // ========================================================
 
-
 class Agent {
   constructor(player) {
     this.player = player;
     this.curBestMove = null;
     this.depthLimit = 2;
-
   }
 
   // START MINIMAX ALGORITHM (WITH ADAPTIVE DEPTH LIMIT)
@@ -29,14 +27,14 @@ class Agent {
       let action = actions[i];
       let newState = initial_state.transition(action);
       let minimaxVal = this.minVal(newState, 1);
-      console.log('option:', action, minimaxVal, '...');
+      // console.log("option:", action, minimaxVal, "...");
       if (minimaxVal > curMaxVal) {
         curMaxVal = minimaxVal;
         this.curBestMove = action;
         keepBestMove(action);
       }
     }
-    return this.curBestMove;  // not used.
+    return this.curBestMove; // not used.
   }
 
   minVal(state, depth) {
@@ -44,31 +42,31 @@ class Agent {
       return state.utility(this.player) * Number.POSITIVE_INFINITY;
     }
     if (depth >= this.depthLimit) {
-      return this.evaluate(state)
+      return this.evaluate(state);
     }
     let minimaxVal = Number.POSITIVE_INFINITY;
     let actions = state.actions();
     for (let i = 0; i < actions.length; i++) {
       let action = actions[i];
       let newState = state.transition(action);
-      minimaxVal = Math.min(minimaxVal, this.maxVal(newState, depth + 1))
+      minimaxVal = Math.min(minimaxVal, this.maxVal(newState, depth + 1));
     }
     return minimaxVal;
   }
 
   maxVal(state, depth) {
     if (state.isTerminal()) {
-      return state.utility(this.player)  * Number.POSITIVE_INFINITY;
+      return state.utility(this.player) * Number.POSITIVE_INFINITY;
     }
     if (depth >= this.depthLimit) {
-      return this.evaluate(state)
+      return this.evaluate(state);
     }
     let minimaxVal = Number.NEGATIVE_INFINITY;
     let actions = state.actions();
     for (let i = 0; i < actions.length; i++) {
       let action = actions[i];
       let newState = state.transition(action);
-      minimaxVal = Math.max(minimaxVal, this.minVal(newState, depth + 1))
+      minimaxVal = Math.max(minimaxVal, this.minVal(newState, depth + 1));
     }
     return minimaxVal;
   }
@@ -94,12 +92,11 @@ class Agent {
       }
     }
     if (this.player == RED) {
-      return   - redWallCount;
+      return -redWallCount;
     } else {
-      return   - blueWallCount;
+      return -blueWallCount;
     }
   }
-
 }
 
 // ======================================================================
@@ -107,11 +104,11 @@ class Agent {
 // BOILERPLATE FOR WEB WORKER
 // ======================================================================
 
-const RED = 'r'
-const BLUE = 'b'
-const EMPTY = 'e'
+const RED = "r";
+const BLUE = "b";
+const EMPTY = "e";
 
-onmessage = function(e) {
+onmessage = function (e) {
   const hex_size = e.data[0];
   const state = e.data[1];
   const initial_state = new HexGameState(hex_size, state.board, state.player);
@@ -120,17 +117,16 @@ onmessage = function(e) {
   this.postMessage(x);
   this.postMessage(false);
   this.close();
-}
-
+};
 
 class HexGameState {
   constructor(hex_size, board, player) {
     this.hex_size = hex_size;
-    this.board = board;  // a 2D array for the board.
-    this.player = player;  // current player of the state (might not be MAX agent)
-    this._winner = EMPTY;  // cache
-    this._end = false;  // cache
-    this._terminal_called = false;  // cache
+    this.board = board; // a 2D array for the board.
+    this.player = player; // current player of the state (might not be MAX agent)
+    this._winner = EMPTY; // cache
+    this._end = false; // cache
+    this._terminal_called = false; // cache
   }
 
   static create_empty_state(hex_size) {
@@ -142,11 +138,10 @@ class HexGameState {
       let row = [];
       board.push(row);
       for (let j = 0; j < hex_size; j++) {
-        row.push(EMPTY)
+        row.push(EMPTY);
       }
     }
     return new HexGameState(hex_size, board, BLUE);
-
   }
 
   static togglePlayer(curPlayer) {
@@ -164,7 +159,7 @@ class HexGameState {
     for (let i = 0; i < this.hex_size; i++) {
       for (let j = 0; j < this.hex_size; j++) {
         if (this.board[i][j] == EMPTY) {
-          valid_moves.push(new Action(i, j))
+          valid_moves.push(new Action(i, j));
         }
       }
     }
@@ -178,7 +173,7 @@ class HexGameState {
     let nextPlayer = HexGameState.togglePlayer(this.player);
     let newBoard = [];
     for (let i = 0; i < this.hex_size; i++) {
-      newBoard.push(this.board[i].slice(0))
+      newBoard.push(this.board[i].slice(0));
     }
     if (action && this.isValidAction(action.i, action.j)) {
       newBoard[action.i][action.j] = this.player;
@@ -186,30 +181,32 @@ class HexGameState {
     return new HexGameState(this.hex_size, newBoard, nextPlayer);
   }
 
-
   isTerminal() {
-
-
     // build a disjoint set
     let blueDSU = new DSU();
     let redDSU = new DSU();
     for (let i = 0; i < this.hex_size; i++) {
       for (let j = 0; j < this.hex_size; j++) {
         let p = this.board[i][j];
-        if (p == EMPTY) { continue; }
+        if (p == EMPTY) {
+          continue;
+        }
         for (let m = -1; m < 2; m++) {
           for (let n = -1; n < 2; n++) {
-            if (m == n) { continue; }
+            if (m == n) {
+              continue;
+            }
             let u = i + m;
             let v = j + n;
-            if (u < 0 || u >= this.hex_size || v < 0 || v >= this.hex_size) { continue; }
+            if (u < 0 || u >= this.hex_size || v < 0 || v >= this.hex_size) {
+              continue;
+            }
             if (p == this.board[u][v]) {
               if (p == RED) {
-                redDSU.union(i + ',' + j, u + ',' + v);
+                redDSU.union(i + "," + j, u + "," + v);
               } else {
-                blueDSU.union(i + ',' + j, u + ',' + v);
+                blueDSU.union(i + "," + j, u + "," + v);
               }
-
             }
           }
         }
@@ -219,23 +216,25 @@ class HexGameState {
     for (let i = 0; i < this.hex_size; i++) {
       for (let u = 0; u < this.hex_size; u++) {
         // check if BLUE wins
-        let subset1 = blueDSU.find(i + ',0');
-        let subset2 = blueDSU.find(u + ',' + (this.hex_size - 1));
+        let subset1 = blueDSU.find(i + ",0");
+        let subset2 = blueDSU.find(u + "," + (this.hex_size - 1));
         // console.log([subset1, subset2])
         if (subset1 == subset2 && this.board[i][0] == BLUE) {
           this._winner = BLUE;
-          break
+          break;
         }
         // check if RED wins
-        let subset3 = redDSU.find('0,' + i);
-        let subset4 = redDSU.find((this.hex_size - 1) + ',' + u);
+        let subset3 = redDSU.find("0," + i);
+        let subset4 = redDSU.find(this.hex_size - 1 + "," + u);
 
         if (subset3 == subset4 && this.board[0][i] == RED) {
           this._winner = RED;
-          break
+          break;
         }
       }
-      if (this._winner != EMPTY) { break; }
+      if (this._winner != EMPTY) {
+        break;
+      }
     }
     if (this._winner == EMPTY) {
       // a long way to find whether the game has ended...
@@ -244,7 +243,9 @@ class HexGameState {
       for (let i = 0; i < this.hex_size; i++) {
         for (let j = 0; j < this.hex_size; j++) {
           let p = this.board[i][j];
-          if (p != EMPTY) { _c++; }
+          if (p != EMPTY) {
+            _c++;
+          }
         }
       }
       if (_c == this.hex_size * this.hex_size) {
@@ -259,18 +260,22 @@ class HexGameState {
 
   utility(query_player) {
     // Winner get 1.0 and the loser got -1.0
-    if (!this._terminal_called) { this.isTerminal(); }
-    if (this._winner == query_player) { return 1.0; }
-    if (this._winner == EMPTY) { return 0.0; }
+    if (!this._terminal_called) {
+      this.isTerminal();
+    }
+    if (this._winner == query_player) {
+      return 1.0;
+    }
+    if (this._winner == EMPTY) {
+      return 0.0;
+    }
     return -1.0;
   }
 
   isValidAction(i, j) {
     // Check if the action i, j is valid
-    return this.board[i][j] == EMPTY
+    return this.board[i][j] == EMPTY;
   }
-
-
 }
 
 class Action {
