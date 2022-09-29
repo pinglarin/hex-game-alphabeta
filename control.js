@@ -5,8 +5,8 @@ function setUpControl() {
   button.position(20, 360);
   button.mousePressed(async () => {
     button.remove();
-    let blueAgent = "players/alphabeta.js"; //"players/nor-random.js";
-    let redAgent = "players/nor-minimax.js";
+    let blueAgent = "players/nor-minimax.js"; //"players/nor-random.js";
+    let redAgent = "players/y_reduction_2.js";
 
     while (!GAMESTATE.isTerminal()) {
       let curAgent = blueAgent;
@@ -20,17 +20,17 @@ function setUpControl() {
 
       GAMESTATE = GAMESTATE.transition(action);
 
-      let b = "";
-      // b_ = []
-      for (let i = 0; i < GAMESTATE.board.length; i++) {
-        for (let j = 0; j < GAMESTATE.board.length; j++) {
-          b += GAMESTATE.board[i][j] + " ";
-          // b_.push(newState.board[i][j]);
-        }
-        b += "\n";
-        // b.push(b_);
-      }
-      console.log(b);
+      // let b = "";
+      // // b_ = []
+      // for (let i = 0; i < GAMESTATE.board.length; i++) {
+      //   for (let j = 0; j < GAMESTATE.board.length; j++) {
+      //     b += GAMESTATE.board[i][j] + " ";
+      //     // b_.push(newState.board[i][j]);
+      //   }
+      //   b += "\n";
+      //   // b.push(b_);
+      // }
+      // console.log(b);
 
       redraw();
     }

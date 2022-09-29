@@ -15,7 +15,7 @@ class Agent {
   constructor(player) {
     this.player = player;
     this.curBestMove = null;
-    this.depthLimit = 2;
+    this.depthLimit = 3;
   }
 
   // START MINIMAX ALGORITHM (WITH ADAPTIVE DEPTH LIMIT)
@@ -102,9 +102,9 @@ class Agent {
       for (let j = 0; j < ysize - i; j++) {
         if (i < state.hex_size && j < state.hex_size) {
           let s = state.board[i][j];
-          if (s == "b") {
+          if (s == "r") {
             column.push(1);
-          } else if (s == "r") {
+          } else if (s == "b") {
             column.push(-1);
           } else {
             column.push(0);
@@ -348,19 +348,19 @@ class Action {
 }
 
 /*
-Disjoint Set Union (“DSU”)  is the Data Structure: disjoint-set data structure
-is a data structure that keeps track of a set of elements partitioned into a
-number of disjoint (non-overlapping) subsets.
-Union Find is the Algorithm: A union-find algorithm is an algorithm that can
-be used to detect cycles in an undirected graph & performs two useful operations
- on such a data structure:
-
-1) Find: Determine which subset a particular element is in. This can be used
-for determining if two elements are in the same subset.
-2) Union: Join two subsets into a single subset.
-
-Source: https://gist.github.com/KSoto/3300322fc2fb9b270dce2bf1e3d80cf3
-*/
+  Disjoint Set Union (“DSU”)  is the Data Structure: disjoint-set data structure
+  is a data structure that keeps track of a set of elements partitioned into a
+  number of disjoint (non-overlapping) subsets.
+  Union Find is the Algorithm: A union-find algorithm is an algorithm that can
+  be used to detect cycles in an undirected graph & performs two useful operations
+   on such a data structure:
+  
+  1) Find: Determine which subset a particular element is in. This can be used
+  for determining if two elements are in the same subset.
+  2) Union: Join two subsets into a single subset.
+  
+  Source: https://gist.github.com/KSoto/3300322fc2fb9b270dce2bf1e3d80cf3
+  */
 
 class DSU {
   constructor() {
