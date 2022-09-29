@@ -30,7 +30,7 @@ class Agent {
       this.depthLimit = 4;
     } else if (initial_state.hex_size <= 7) {
       // console.log("here");
-      this.depthLimit = 2;
+      this.depthLimit = 3;
     } else if (initial_state.hex_size <= 11) {
       this.depthLimit = 2;
     }
@@ -116,16 +116,6 @@ class Agent {
             } else {
               column.push(0);
             }
-            // } else if (state.player == BLUE) {
-            //   // console.log("blue");
-            //   if (s == BLUE) {
-            //     column.push(1);
-            //   } else if (s == RED) {
-            //     column.push(-1);
-            //   } else {
-            //     column.push(0);
-            //   }
-            // }
           } else if (i >= state.hex_size) {
             column.push(-1);
           } else if (j >= state.hex_size) {
@@ -155,9 +145,7 @@ class Agent {
       for (let y = 0; y < i - 1; y++) {
         for (let x = 0; x < i - 1 - y; x++) {
           let p1 = yboard[x][y];
-          // console.log(x + " " + y);
           let p2 = yboard[x + 1][y];
-
           let p3 = yboard[x][y + 1];
           yboard[x][y] = (p1 + p2 + p3 - p1 * p2 * p3) / 2;
         }

@@ -7,7 +7,7 @@ class HexGameState {
     this._end = false;  // cache
     this._terminal_called = false;  // cache
   }
-
+  
   static create_empty_state(hex_size) {
     // return the staring board of the game.
     // the board is a 2D array where i, j action is a position i, j on the board.
