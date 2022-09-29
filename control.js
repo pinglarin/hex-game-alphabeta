@@ -6,7 +6,7 @@ function setUpControl() {
   button.mousePressed(async () => {
     button.remove();
     let blueAgent = "players/nor-minimax.js"; //"players/nor-random.js";
-    let redAgent = "players/y_reduction_2.js";
+    let redAgent = "players/Ohm.js";
 
     while (!GAMESTATE.isTerminal()) {
       let curAgent = blueAgent;

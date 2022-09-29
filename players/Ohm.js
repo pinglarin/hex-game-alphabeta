@@ -34,9 +34,6 @@ class Agent {
     } else if (initial_state.hex_size <= 11) {
       this.depthLimit = 2;
     }
-    // else if () {
-    //   this.depthLimit = 4;
-    // }
     let curMaxVal = Number.NEGATIVE_INFINITY;
     this.curBestMove = actions[0];
     for (let i = 0; i < actions.length; i++) {
