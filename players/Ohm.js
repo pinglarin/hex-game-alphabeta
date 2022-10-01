@@ -1,6 +1,7 @@
 // Supakitt Surojanakul 6388065
 // Paveena Kumnerdpun 6388088
 // Napahatai Sittirit 6388102
+// Mario Petrakides 6588210
 
 // eval function is modified from: https://github.com/ekowabaka/hex/blob/679d3fa04632d941fa2236c4c6887663f1e3b101/hex/players/alphabeta.py
 
