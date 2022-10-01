@@ -27,7 +27,7 @@ class Agent {
       let action = actions[i];
       let newState = initial_state.transition(action);
       let minimaxVal = this.minVal(newState, 1);
-      // console.log("option:", action, minimaxVal, "...");
+      console.log("option:", action, minimaxVal, "...");
       if (minimaxVal > curMaxVal) {
         curMaxVal = minimaxVal;
         this.curBestMove = action;

@@ -1,8 +1,8 @@
-// https://github.com/ekowabaka/hex/blob/679d3fa04632d941fa2236c4c6887663f1e3b101/main.py#L52
-
 // Supakitt Surojanakul 6388065
 // Paveena Kumnerdpun 6388088
 // Napahatai Sittirit 6388102
+
+// eval function is modified from: https://github.com/ekowabaka/hex/blob/679d3fa04632d941fa2236c4c6887663f1e3b101/hex/players/alphabeta.py
 
 class Agent {
   constructor(player) {
@@ -29,8 +29,7 @@ class Agent {
     if (initial_state.hex_size <= 5) {
       this.depthLimit = 4;
     } else if (initial_state.hex_size <= 7) {
-      // console.log("here");
-      this.depthLimit = 3;
+      this.depthLimit = 4;
     } else if (initial_state.hex_size <= 11) {
       this.depthLimit = 2;
     }
@@ -56,6 +55,7 @@ class Agent {
       return state.utility(this.player) * Number.POSITIVE_INFINITY;
     }
     if (depth >= this.depthLimit) {
+      // return evaluate(state.board, state.hex_size, state.player);
       return this.evaluate(state);
     }
     let minimaxVal = Number.POSITIVE_INFINITY;
@@ -75,9 +75,10 @@ class Agent {
       return state.utility(this.player) * Number.POSITIVE_INFINITY;
     }
     if (depth >= this.depthLimit) {
-      let e = this.evaluate(state);
+      // let e = this.evaluate(state);
       // console.log(e);
-      return e;
+      // return evaluate(state.board, state.hex_size, state.player);
+      return this.evaluate(state);
     }
 
     let minimaxVal = Number.NEGATIVE_INFINITY;
@@ -98,6 +99,11 @@ class Agent {
     // y_reduction, max_flow
     // let r1 = null
     // let r2 = null;
+    let myPlayer = state.player;
+    let opponent;
+    if (myPlayer == BLUE) opponent = RED;
+    else opponent = BLUE;
+    // opponent = RED ? state.player== BLUE ! BLUE;
     let ysize = state.hex_size + state.hex_size - 1;
     let yboard = [];
     for (let i = 0; i < ysize; i++) {
@@ -107,47 +113,72 @@ class Agent {
           if (i < state.hex_size && j < state.hex_size) {
             let s = state.board[i][j];
             if (s == RED) {
-              column.push(1);
+              let pre = Math.floor(state.hex_size / 3);
+              let post = pre * 2;
+              // if (i <= Math.floor(state.hex_size / 3) && j <= Math.floor(state.hex_size / 3)) column.push(2);
+              if (i >= post && i < pre && j >= post && j < pre) column.push(2);
+              else column.push(1);
             } else if (s == BLUE) {
               column.push(-1);
             } else {
               column.push(0);
             }
           } else if (i >= state.hex_size) {
-            column.push(-1);
-          } else if (j >= state.hex_size) {
             column.push(1);
+          } else if (j >= state.hex_size) {
+            column.push(-1);
           }
         } else if (state.player == BLUE) {
           if (i < state.hex_size && j < state.hex_size) {
             let s = state.board[i][j];
             if (s == BLUE) {
-              column.push(1);
+              let pre = Math.floor(state.hex_size / 3);
+              let post = pre * 2;
+              // if (i <= Math.floor(state.hex_size / 3) && j <= Math.floor(state.hex_size / 3)) column.push(2);
+              if (i >= post && i < pre && j >= post && j < pre) column.push(2);
+              else column.push(1);
             } else if (s == RED) {
               column.push(-1);
             } else {
               column.push(0);
             }
           } else if (i >= state.hex_size) {
-            column.push(1);
-          } else if (j >= state.hex_size) {
             column.push(-1);
+          } else if (j >= state.hex_size) {
+            column.push(1);
           }
         }
       }
       yboard.push(column);
     }
 
+    let p1 = 0,
+      p2 = 0,
+      p3 = 0;
+
     for (let i = ysize; i >= 0; i--) {
       for (let y = 0; y < i - 1; y++) {
         for (let x = 0; x < i - 1 - y; x++) {
-          let p1 = yboard[x][y];
-          let p2 = yboard[x + 1][y];
-          let p3 = yboard[x][y + 1];
+          // if (state.player == BLUE) {
+          //   p1 = yboard[x][y];
+          //   p2 = yboard[x + 1][y];
+          //   // p3 = yboard[x - 1][y];
+          //   p3 = yboard[x][y + 1];
+          // } else if (state.player == RED) {
+          //   p1 = yboard[x][y];
+          //   p2 = yboard[x][y + 1];
+          //   // p3 = yboard[x][y - 1];
+          //   p3 = yboard[x + 1][y];
+          // }
+          p1 = yboard[x][y];
+          p2 = yboard[x + 1][y];
+          // p3 = yboard[x - 1][y];
+          p3 = yboard[x][y + 1];
           yboard[x][y] = (p1 + p2 + p3 - p1 * p2 * p3) / 2;
         }
       }
     }
+
     return yboard[0][0];
     // return Math.random();
   }
@@ -173,6 +204,15 @@ class Agent {
     }
   }
 }
+
+//   '''
+// RED is MAX
+//   things I want to consider:
+// 0. centerness
+//   1. liberty
+//   2. vulnerability
+// 3. completeness
+//   '''
 
 // ======================================================================
 // DO NO CHANGE
